@@ -104,7 +104,59 @@ const [ _, scorePlayer2 ] = scores.reduce( ( [ accPlayer1, accPlayer2 ], [ score
 
 const totalScore = scorePlayer2; //?
 
+
+
 /* --------- Part B --------- */
+
+// new decryption rules:
+// - X means you need to lose
+// - Y means you need to end the round in a draw
+// - Z means you need to win
+
+function getLoosingShape( shape ) {
+	switch ( shape ) {
+		case 'A':
+			return 'C';
+		case 'B':
+			return 'A';
+		case 'C':
+			return 'B';
+	}
+}
+
+function getWinningShape( shape ) {
+	switch ( shape ) {
+		case 'A':
+			return 'B';
+		case 'B':
+			return 'C';
+		case 'C':
+			return 'A';
+	}
+}
+
+function decryptShapesBasedOnNewRules( input ) {
+	return input.map( ( [player1, player2] ) => {
+		switch ( player2 ) {
+			case 'X':
+				return [ player1, getLoosingShape( player1 ) ];
+			case 'Y':
+				return [ player1, player1 ]
+			case 'Z':
+				return [ player1, getWinningShape( player1 ) ];
+		}
+	})
+}
+
+const shapesPart2 = decryptShapesBasedOnNewRules( normalizedInput );
+
+const scoresPart2 = shapesPart2.map( playRockPaperScissors );
+
+const [ __, scorePlayer2Part2 ] = scoresPart2.reduce( ( [ accPlayer1, accPlayer2 ], [ scorePlayer1, scorePlayer2 ] ) => {
+	return [ accPlayer1 + scorePlayer1, accPlayer2 + scorePlayer2 ];
+}, [0, 0] );
+
+const totalScorePart2 = scorePlayer2Part2; //?
 
 module.exports = {
 	getScoreForShape,
