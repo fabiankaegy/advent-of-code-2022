@@ -52,15 +52,43 @@ function getVisibleTrees( treeMap ) {
 	return visibleTrees;
 }
 
+function getMaxViewingDistanceOfEveryTree( treeMap ) {
+	const maxViewingDistances = [];
+
+	treeMap.forEach((row, rowIndex) => {
+		row.forEach((tree, treeIndex) => {
+
+			const treesInColumn = getAllTreesInColumn(treeMap, treeIndex);
+			const treesAbove = treesInColumn.slice(0, rowIndex).reverse();
+			const treesBelow = treesInColumn.slice(rowIndex + 1);
+
+			const treesToTheLeft = row.slice(0, treeIndex).reverse();
+			const treesToTheRight = row.slice(treeIndex + 1);
+
+			const maxViewingDistanceAbove = treesAbove.findIndex(t => t >= tree) + 1 || treesAbove.length;
+			const maxViewingDistanceBelow = treesBelow.findIndex(t => t >= tree) + 1 || treesBelow.length;
+			const maxViewingDistanceToTheLeft = treesToTheLeft.findIndex(t => t >= tree) + 1 || treesToTheLeft.length;
+			const maxViewingDistanceToTheRight = treesToTheRight.findIndex(t => t >= tree) + 1 || treesToTheRight.length;
+
+			const viewingDistanceScore = (maxViewingDistanceAbove) * (maxViewingDistanceBelow) * (maxViewingDistanceToTheLeft) * (maxViewingDistanceToTheRight);
+
+			maxViewingDistances.push( viewingDistanceScore );
+
+		});
+	});
+
+	return maxViewingDistances;
+}
+
 function getAnswerPartA(input) {
 	return getVisibleTrees(input).length;
 }
 
-const normalizedInput = normalizeInput(sampleInput);
+const normalizedInput = normalizeInput(input);
 const answerPartA = getAnswerPartA(normalizedInput); //?
 
 function getAnswerPartB(input) {
-	
+	return Math.max(...getMaxViewingDistanceOfEveryTree(input));
 }
 
 const answerPartB = getAnswerPartB(normalizedInput); //?
